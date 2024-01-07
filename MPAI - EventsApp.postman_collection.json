@@ -1,0 +1,363 @@
+{
+	"info": {
+		"_postman_id": "bf1daeb1-dde6-4001-896e-937fd5347e65",
+		"name": "MPAI - EventsApp",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18139438"
+	},
+	"item": [
+		{
+			"name": "Create event",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"66\",\n    \"description\": \"AAS222\",\n    \"date_planned\": \"21/02/2024\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/events/birthday",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"events",
+						"birthday"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Event Venue",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Sala1\",\n    \"address\": \"Magheru\",\n    \"capacity\": \"25\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/venues/conference/add/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"venues",
+						"conference",
+						"add",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Event Attendee",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n        \"firstName\": \"Ion\",\n        \"lastName\": \"Rusu2\",\n        \"email\": \"ionrusu2@yahoo.com\",\n        \"phoneNumber\": \"0766593123\",\n        \"company\": \"Test\",\n        \"vip\": false\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/attendees/conference/add/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"attendees",
+						"conference",
+						"add",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Event to attendee",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Ziua lui Ion\",\n    \"description\": \"Ion7\",\n    \"date_planned\": \"21/06/2024\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/attendees/birthday/add/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"attendees",
+						"birthday",
+						"add",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Attendees",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/attendees/CONFERENCE",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"attendees",
+						"CONFERENCE"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Attendee by ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/attendees/CONFERENCE/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"attendees",
+						"CONFERENCE",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Events",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/events/BIRTHDAYPARTY",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"events",
+						"BIRTHDAYPARTY"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Event by ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/events/BIRTHDAYPARTY/11",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"events",
+						"BIRTHDAYPARTY",
+						"11"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Venues",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/venues/CONFERENCE",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"venues",
+						"CONFERENCE"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Venue by ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/venues/CONFERENCE/2",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"venues",
+						"CONFERENCE",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Attendee",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n        \"firstName\": \"Ion\",\n        \"lastName\": \"Rusu2\",\n        \"email\": \"ionrusu2@yahoo.com\",\n        \"phoneNumber\": \"0766593123\",\n        \"company\": \"Test\",\n        \"vip\": false\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/attendees/conference/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"attendees",
+						"conference",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Event",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"test5555\",\n    \"description\": \"AAS222\",\n    \"date_planned\": \"21/02/2024\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/events/birthday/12",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"events",
+						"birthday",
+						"12"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Attendee",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/attendees/CONFERENCE/2",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"attendees",
+						"CONFERENCE",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Event",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/events/BIRTHDAYPARTY/7",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"events",
+						"BIRTHDAYPARTY",
+						"7"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Venue",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/venues/CONFERENCE/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"venues",
+						"CONFERENCE",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
