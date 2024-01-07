@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 public class Conference implements Event {
@@ -25,8 +26,8 @@ public class Conference implements Event {
         this.name = c.name;
         this.description = c.description;
         this.date_planned = c.date_planned;
-        //this.attendees = bp.attendees;
-        //this.venues = bp.venues;
+        this.attendees = c.attendees.stream().map(a -> new ConferenceAttendee(a.getFirstName(), a.getLastName(), a.getEmail(), a.getPhoneNumber(), a.getCompany(), a.isVIP())).collect(Collectors.toSet());
+        this.venues = c.venues.stream().map(v -> new ConferenceVenue(v.getName(), v.getAddress(), v.getCapacity())).collect(Collectors.toSet());
     }
 
     @ManyToMany

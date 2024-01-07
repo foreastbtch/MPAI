@@ -1,5 +1,6 @@
 package com.mpai.app.Models.Conference;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mpai.app.Models.Attendee;
 import jakarta.persistence.*;
 
@@ -19,8 +20,21 @@ public class ConferenceAttendee implements Attendee {
     private boolean isVIP;
 
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, mappedBy = "attendees")
+    @JsonIgnore
     private Set<Conference> events = new HashSet<>();
 
+    public ConferenceAttendee() {
+    }
+
+    public ConferenceAttendee(String firstName, String lastName, String email, String phoneNumber,
+                              String company, boolean isVIP) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.company = company;
+        this.isVIP = isVIP;
+    }
 
     public int getId() {
         return id;

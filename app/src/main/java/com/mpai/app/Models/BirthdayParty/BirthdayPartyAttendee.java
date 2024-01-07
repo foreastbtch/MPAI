@@ -1,5 +1,6 @@
 package com.mpai.app.Models.BirthdayParty;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mpai.app.Models.Attendee;
 import jakarta.persistence.*;
 
@@ -19,6 +20,7 @@ public class BirthdayPartyAttendee implements Attendee {
     private String phoneNumber;
 
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, mappedBy = "attendees")
+    @JsonIgnore
     private Set<BirthdayParty> events = new HashSet<>();
 
     public BirthdayPartyAttendee() {

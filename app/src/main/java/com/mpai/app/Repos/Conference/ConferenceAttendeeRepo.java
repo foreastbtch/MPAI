@@ -1,4 +1,4 @@
-package com.mpai.app.Repos;
+package com.mpai.app.Repos.Conference;
 
 import com.mpai.app.Models.Conference.ConferenceAttendee;
 import org.springframework.data.jpa.repository.JpaRepository;

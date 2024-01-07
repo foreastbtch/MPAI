@@ -1,16 +1,21 @@
-package com.mpai.app.Controller;
+package com.mpai.app.Controllers;
 
 import com.mpai.app.Models.BirthdayParty.BirthdayParty;
 import com.mpai.app.Models.BirthdayParty.BirthdayPartyAttendee;
+import com.mpai.app.Models.BirthdayParty.BirthdayPartyVenue;
 import com.mpai.app.Models.Conference.Conference;
+import com.mpai.app.Models.Conference.ConferenceAttendee;
+import com.mpai.app.Models.Conference.ConferenceVenue;
 import com.mpai.app.Models.Event;
 import com.mpai.app.Models.Factories.BirthdayPartyFactory;
 import com.mpai.app.Models.Factories.ConferenceFactory;
 import com.mpai.app.Models.EventType;
-import com.mpai.app.Repos.BirthdayAttendeeRepo;
-import com.mpai.app.Repos.BirthdayPartyRepo;
-import com.mpai.app.Repos.ConferenceAttendeeRepo;
-import com.mpai.app.Repos.ConferenceRepo;
+import com.mpai.app.Repos.Birthday.BirthdayAttendeeRepo;
+import com.mpai.app.Repos.Birthday.BirthdayPartyRepo;
+import com.mpai.app.Repos.Birthday.BirthdayVenueRepo;
+import com.mpai.app.Repos.Conference.ConferenceAttendeeRepo;
+import com.mpai.app.Repos.Conference.ConferenceRepo;
+import com.mpai.app.Repos.Conference.ConferenceVenueRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,11 +38,12 @@ public class EventController {
     private BirthdayPartyFactory birthdayPartyFactory;
     @Autowired
     private ConferenceFactory conferenceFactory;
+    @Autowired
+    private ConferenceVenueRepo conferenceVenueRepo;
+    @Autowired
+    private BirthdayVenueRepo birthdayVenueRepo;
 
     //abstract factory + Dependency injection + multiton
-    //de ce nu mergea cu id?? => mergea dar erau 2 join uri, in fiecare fisier cate unul
-    //de ce nu se salva in tabela de legatura?
-    //daca vreau sa fac 2 save uri in acelasi endpoint?
     @GetMapping(value = "/")
     public String getPage() {
         return "Welcome";
@@ -57,7 +63,7 @@ public class EventController {
     @GetMapping(value = "/events/{type}/{id}")
     public ResponseEntity<Event> getEventById(@PathVariable EventType type, @PathVariable long id) {
         return switch (type) {
-            case CONFERENCE -> ResponseEntity.status(HttpStatus.FOUND).body(conferenceRepo.findById(id).get());
+            case CONFERENCE -> ResponseEntity.status(HttpStatus.FOUND).body(conferenceRepo.findById(id).isPresent() ? conferenceRepo.findById(id).get() : null);
             case BIRTHDAYPARTY -> ResponseEntity.status(HttpStatus.FOUND).body(birthdayPartyRepo.getBirthday(id));
         };
     }
@@ -70,7 +76,7 @@ public class EventController {
 
     @PostMapping(value = "/events/birthday")
     public ResponseEntity addBirthday(@RequestBody BirthdayParty birthdayParty) {
-        birthdayPartyRepo.save(birthdayParty);
+        birthdayPartyRepo.addBirthday(birthdayParty);
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
@@ -81,6 +87,39 @@ public class EventController {
 
         party.getAttendees().add(birthdayPartyAttendee);
         birthdayAttendeeRepo.save(birthdayPartyAttendee);
+
+        return new ResponseEntity(HttpStatus.CREATED);
+    }
+
+    @PostMapping(value = "/venues/birthday/add/{eventId}")
+    public ResponseEntity addBirthdayVenue(@PathVariable long eventId, @RequestBody BirthdayPartyVenue birthdayPartyVenue) {
+        BirthdayParty party = birthdayPartyRepo.findById(eventId).get();
+        birthdayPartyVenue.getEvents().add(party);
+
+        party.getVenues().add(birthdayPartyVenue);
+        birthdayVenueRepo.save(birthdayPartyVenue);
+
+        return new ResponseEntity(HttpStatus.CREATED);
+    }
+
+    @PostMapping(value = "/attendees/conference/add/{eventId}")
+    public ResponseEntity addConferenceAttendee(@PathVariable long eventId, @RequestBody ConferenceAttendee conferenceAttendee) {
+        Conference conference = conferenceRepo.findById(eventId).get();
+        conferenceAttendee.getEvents().add(conference);
+
+        conference.getAttendees().add(conferenceAttendee);
+        conferenceAttendeeRepo.save(conferenceAttendee);
+
+        return new ResponseEntity(HttpStatus.CREATED);
+    }
+
+    @PostMapping(value = "/venues/conference/add/{eventId}")
+    public ResponseEntity addConferenceVenue(@PathVariable long eventId, @RequestBody ConferenceVenue conferenceVenue) {
+        Conference conference = conferenceRepo.findById(eventId).get();
+        conferenceVenue.getEvents().add(conference);
+
+        conference.getVenues().add(conferenceVenue);
+        conferenceVenueRepo.save(conferenceVenue);
 
         return new ResponseEntity(HttpStatus.CREATED);
     }
@@ -98,12 +137,7 @@ public class EventController {
 
     @PutMapping(value = "/events/birthday/{id}")
     public ResponseEntity updateBirthday(@PathVariable long id, @RequestBody BirthdayParty birthdayParty) {
-        BirthdayParty eventToUpdate = birthdayPartyRepo.findById(id).get();
-        eventToUpdate.setDate_planned(birthdayParty.getDate_planned());
-        eventToUpdate.setDescription(birthdayParty.getDescription());
-        eventToUpdate.setName(birthdayParty.getName());
-        birthdayPartyRepo.save(eventToUpdate);
-
+        birthdayPartyRepo.updateBirthday(id, birthdayParty);
         return new ResponseEntity(HttpStatus.OK);
     }
 

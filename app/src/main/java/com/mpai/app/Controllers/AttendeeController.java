@@ -1,20 +1,22 @@
-package com.mpai.app.Controller;
+package com.mpai.app.Controllers;
 
 import com.mpai.app.Models.Attendee;
 import com.mpai.app.Models.BirthdayParty.BirthdayParty;
 import com.mpai.app.Models.BirthdayParty.BirthdayPartyAttendee;
-import com.mpai.app.Repos.BirthdayAttendeeRepo;
-import com.mpai.app.Repos.ConferenceAttendeeRepo;
+import com.mpai.app.Models.Conference.Conference;
+import com.mpai.app.Repos.Birthday.BirthdayAttendeeRepo;
+import com.mpai.app.Repos.Conference.ConferenceAttendeeRepo;
 import com.mpai.app.Models.Conference.ConferenceAttendee;
 import com.mpai.app.Models.EventType;
-import com.mpai.app.Repos.BirthdayPartyRepo;
-import com.mpai.app.Repos.ConferenceRepo;
+import com.mpai.app.Repos.Birthday.BirthdayPartyRepo;
+import com.mpai.app.Repos.Conference.ConferenceRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class AttendeeController {
@@ -39,22 +41,10 @@ public class AttendeeController {
     @GetMapping(value = "/attendees/{type}/{id}")
     public ResponseEntity<Attendee> getEventAttendeeById(@PathVariable EventType type, @PathVariable long id) {
         return switch (type) {
-            case CONFERENCE -> ResponseEntity.status(HttpStatus.FOUND).body(conferenceAttendeeRepo.findById(id).get());
+            case CONFERENCE -> ResponseEntity.status(HttpStatus.FOUND).body(conferenceAttendeeRepo.findById(id).isPresent() ? conferenceAttendeeRepo.findById(id).get() : null);
 
-            case BIRTHDAYPARTY -> ResponseEntity.status(HttpStatus.FOUND).body(birthdayAttendeeRepo.findById(id).get());
+            case BIRTHDAYPARTY -> ResponseEntity.status(HttpStatus.FOUND).body(birthdayAttendeeRepo.findById(id).isPresent() ? birthdayAttendeeRepo.findById(id).get() : null);
         };
-    }
-
-    @PostMapping(value = "/attendees/conference")
-    public ResponseEntity addConferenceAttendee(@RequestBody ConferenceAttendee conferenceAttendee) {
-        conferenceAttendeeRepo.save(conferenceAttendee);
-        return new ResponseEntity(HttpStatus.CREATED);
-    }
-
-    @PostMapping(value = "/attendees/birthday")
-    public ResponseEntity addBirthdayAttendee(@RequestBody BirthdayPartyAttendee birthdayPartyAttendee) {
-        birthdayAttendeeRepo.save(birthdayPartyAttendee);
-        return new ResponseEntity(HttpStatus.CREATED);
     }
 
     @PostMapping(value = "/attendees/birthday/add/{attendeeId}")
@@ -63,12 +53,10 @@ public class AttendeeController {
         birthdayParty.getAttendees().add(attendee);
 
         attendee.getEvents().add(birthdayParty);
-        //birthdayAttendeeRepo.save(attendee);
         birthdayPartyRepo.save(birthdayParty);
 
         return new ResponseEntity(HttpStatus.CREATED);
     }
-    //de adaugat endpoint de adaugare attendee la event existent
 
     @PutMapping(value = "/attendees/conference/{id}")
     public ResponseEntity updateConferenceAttendee(@PathVariable long id, @RequestBody ConferenceAttendee conferenceAttendee) {
@@ -99,9 +87,27 @@ public class AttendeeController {
     public ResponseEntity deleteEventAttendee(@PathVariable EventType type, @PathVariable long id) {
 
         switch (type) {
-            case CONFERENCE -> conferenceAttendeeRepo.deleteConferenceAttendee(id);
+            case CONFERENCE -> {
+                List<Conference> conferenceList = conferenceRepo.findAll().stream().
+                        filter(x -> x.getAttendees().contains(conferenceAttendeeRepo.findById(id).get())).toList();
 
-            case BIRTHDAYPARTY -> birthdayAttendeeRepo.deleteBirthdayAttendee(id);
+                for(Conference c : conferenceList){
+                    c.setAttendees(c.getAttendees().stream().filter(x -> x.getId() != id).collect(Collectors.toSet()));
+                }
+
+                conferenceAttendeeRepo.deleteConferenceAttendee(id);
+            }
+
+            case BIRTHDAYPARTY -> {
+                List<BirthdayParty> birthdayPartyList = birthdayPartyRepo.findAll().stream().
+                        filter(x -> x.getAttendees().contains(birthdayAttendeeRepo.findById(id).get())).toList();
+
+                for(BirthdayParty c : birthdayPartyList){
+                    c.setAttendees(c.getAttendees().stream().filter(x -> x.getId() != id).collect(Collectors.toSet()));
+                }
+                birthdayAttendeeRepo.deleteBirthdayAttendee(id);
+            }
+
         }
         ;
 

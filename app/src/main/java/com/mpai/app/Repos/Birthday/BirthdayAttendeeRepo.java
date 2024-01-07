@@ -1,4 +1,4 @@
-package com.mpai.app.Repos;
+package com.mpai.app.Repos.Birthday;
 
 import com.mpai.app.Models.BirthdayParty.BirthdayPartyAttendee;
 import org.springframework.data.jpa.repository.JpaRepository;
